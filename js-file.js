@@ -6,18 +6,11 @@ function getComputerChoice() {
     return computerPlays[Math.floor(Math.random() * computerPlays.length)];
 }
 
-function getHumanChoice() {
-    const button = document.querySelector('button');
-    button.addEventListener('click', (e) => {
-        console.log(e.target.id);
-        return e.target.id;
-    });
-}
-
-function playRound(humanChoice, computerChoice) {
-    let results = document.querySelector('#results');
+function playRound(humanChoice) {
+    const results = document.querySelector('#results');
     let playerScore = document.querySelector('#playerScore');
     let cpuScore = document.querySelector('#computerScore');
+    let computerChoice = getComputerChoice();
 
     if (humanChoice === computerChoice) {
         results.textContent = 'You tied!';
@@ -25,6 +18,7 @@ function playRound(humanChoice, computerChoice) {
     else if (humanChoice === 'rock' && computerChoice == 'scissors' || humanChoice === 'scissors' && computerChoice === 'paper' || humanChoice === 'paper' && computerChoice === 'rock') {
         results.textContent = `You win! ${humanChoice} beats ${computerChoice}.`;
         humanScore++;
+
     }
     else if (humanChoice === 'scissors' && computerChoice == 'rock' || humanChoice === 'paper' && computerChoice === 'scissors' || humanChoice === 'rock' && computerChoice === 'paper') {
         results.textContent = `You lose! ${computerChoice} beats ${humanChoice}.`;
@@ -35,18 +29,29 @@ function playRound(humanChoice, computerChoice) {
 }
 
 function playGame() {
-        let computerChoice = getComputerChoice();
-        let humanChoice = getHumanChoice();
-        playRound(humanChoice,computerChoice);
+        let humanChoice;
         let winner = document.querySelector('#winner');
+        let buttons = document.querySelectorAll('input');
 
-        if ((humanScore || computerScore) === 5) {
-            if (humanScore === 5) {
-                winner.textContent = 'You win!';
-            } else {
-                winner.textContent = 'You lose. Better luck next time.'
-            }
-        }
+        buttons.forEach((button) => {
+            button.addEventListener('click', (e) => {
+                humanChoice = e.target.id;
+                playRound(humanChoice);
+                if (humanScore === 5 || computerScore === 5) {
+                    buttons.forEach((button) => {
+                        button.disabled = true;
+                    });
+                    if (humanScore === 5) {
+                        winner.textContent = 'Player wins!';
+
+                    } else {
+                        winner.textContent = 'You lose. Better luck next time.';
+                    }
+                }
+            });
+        });
+
+
 }
 
 playGame();
